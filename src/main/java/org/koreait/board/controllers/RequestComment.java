@@ -1,3 +1,4 @@
+
 package org.koreait.board.controllers;
 
 import jakarta.validation.constraints.NotBlank;

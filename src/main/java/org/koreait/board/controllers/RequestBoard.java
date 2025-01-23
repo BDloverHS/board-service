@@ -32,5 +32,4 @@ public class RequestBoard {
     private String youtubeUrl; // Youtube 주소
 
     private String category; // 게시글 분류
-
 }

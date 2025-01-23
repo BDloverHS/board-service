@@ -1,6 +1,5 @@
 package org.koreait.member;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.koreait.member.contants.Authority;
@@ -19,12 +18,13 @@ public class Member implements UserDetails {
     private String email;
     private String name;
 
-    @JsonAlias("authorities")
     private List<Authority> _authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return _authorities == null || _authorities.isEmpty() ? List.of() : _authorities.stream().map(s -> new SimpleGrantedAuthority(s.name())).toList();
+        return _authorities == null || _authorities.isEmpty()
+                ? List.of()
+                : _authorities.stream().map(s -> new SimpleGrantedAuthority(s.name())).toList();
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.koreait.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.koreait.board.validations.CommentValidator;
+import org.koreait.board.validators.CommentValidator;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/comment")
 public class CommentController {
+
     private final Utils utils;
     private final CommentValidator commentValidator;
 
@@ -34,14 +35,15 @@ public class CommentController {
     }
 
     /**
-     * 댓글 한 개 조회
-     *   - 댓글 수정 시 기초 데이터(프론트엔드)
+     * 댓글 한개 조회
+     *  - 댓글 수정시 기초 데이터(프론트앤드)
      *
      * @param seq
      * @return
      */
     @GetMapping("/view/{seq}")
     public JSONData view(@PathVariable("seq") Long seq) {
+
         return null;
     }
 
@@ -53,17 +55,19 @@ public class CommentController {
      */
     @GetMapping("/list/{seq}")
     public JSONData list(@PathVariable("seq") Long seq) {
+
         return null;
     }
 
     /**
-     * 댓글 한 개 삭제
+     * 댓글 한개 삭제
      *
      * @param seq
      * @return
      */
     @DeleteMapping("/{seq}")
     public JSONData delete(@PathVariable("seq") Long seq) {
+
         return null;
     }
 }

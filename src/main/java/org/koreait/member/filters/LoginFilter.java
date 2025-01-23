@@ -8,24 +8,28 @@ import jakarta.servlet.ServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
-import org.springframework.context.annotation.Lazy;
+import org.koreait.member.Member;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-@Lazy
+@Component
 @RequiredArgsConstructor
 public class LoginFilter extends GenericFilterBean {
 
     private final Utils utils;
-    private final ObjectMapper om;
     private final RestTemplate restTemplate;
+    private final ObjectMapper om;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -47,21 +51,29 @@ public class LoginFilter extends GenericFilterBean {
         }
 
         /**
-         * 1. 토큰이 있으면 member-service 인스턴스에서 회원정보 조회
+         * 1. 토큰이 있으면, member-service 인스턴스에서 회원 정보 조회
          * 2. 로그인 처리
          */
         try {
-            String apiUrl = utils.serviceUrl("member-service", "/info");
+            String apiUrl = utils.serviceUrl("member-service", "/");
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setBasicAuth(token);
+            headers.setBearerAuth(token);
 
             HttpEntity<Void> request = new HttpEntity<>(headers);
 
             ResponseEntity<JSONData> response = restTemplate.exchange(apiUrl, HttpMethod.GET, request, JSONData.class);
+            JSONData jsonData = response.getBody();
+            if (response.getStatusCode().is2xxSuccessful() && jsonData != null && jsonData.isSuccess()) { // 응답 성공시 처리
+                String json = om.writeValueAsString(jsonData.getData());
 
-            System.out.println("------ response ------");
-            System.out.println(response);
+                Member member = om.readValue(json, Member.class);
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(member, null, member.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            } // endif
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,7 +2,7 @@ package org.koreait.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.koreait.board.validations.BoardValidator;
+import org.koreait.board.validators.BoardValidator;
 import org.koreait.global.exceptions.BadRequestException;
 import org.koreait.global.libs.Utils;
 import org.koreait.global.rests.JSONData;
@@ -18,18 +18,19 @@ public class BoardController {
     private final BoardValidator boardValidator;
 
     /**
-     * 게시판 설정 한 개 조회
+     * 게시판 설정 한개 조회
      *
      * @param bid
      * @return
      */
     @GetMapping("/config/{bid}")
     public JSONData config(@PathVariable("bid") String bid) {
+
         return null;
     }
 
     /**
-     * 게시글 등록 및 수정 처리
+     * 게시글 등록, 수정 처리
      *
      * @return
      */
@@ -37,7 +38,6 @@ public class BoardController {
     public JSONData save(@Valid @RequestBody RequestBoard form, Errors errors) {
         String mode = form.getMode();
         mode = StringUtils.hasText(mode) ? mode : "write";
-
         commonProcess(form.getBid(), mode); // 공통 처리
 
         boardValidator.validate(form, errors);
@@ -46,12 +46,13 @@ public class BoardController {
             throw new BadRequestException(utils.getErrorMessages(errors));
         }
 
+
         return null;
     }
 
     /**
-     * 게시글 한 개 조회
-     * - 글보기, 글 수정 시에 활용될 수 있음(프론트엔드)
+     * 게시글 한개 조회
+     * - 글보기, 글 수정시에 활용될 수 있음(프론트앤드)
      *
      * @param seq
      * @return
@@ -77,7 +78,7 @@ public class BoardController {
     }
 
     /**
-     * 게시글 한 개 삭제
+     * 게시글 한개 삭제
      *
      * @param seq
      * @return
@@ -88,6 +89,14 @@ public class BoardController {
 
         return null;
     }
+
+
+    /**
+     * 게시글 번호로 공통 처리
+     *
+     * @param seq
+     * @param mode
+     */
     private void commonProcess(Long seq, String mode) {
 
     }
