@@ -2,6 +2,7 @@ package org.koreait.board.validations;
 
 import lombok.RequiredArgsConstructor;
 import org.koreait.board.controllers.RequestComment;
+import org.koreait.board.repositories.CommentDataRepository;
 import org.koreait.global.validators.PasswordValidator;
 import org.koreait.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
@@ -17,6 +18,7 @@ import org.springframework.validation.Validator;
 public class CommentValidator implements Validator, PasswordValidator {
     private final MemberUtil memberUtil;
     private final PasswordEncoder passwordEncoder;
+    private final CommentDataRepository commentDataRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {

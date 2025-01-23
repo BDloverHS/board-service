@@ -1,9 +1,11 @@
 package org.koreait.global.libs;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.koreait.global.entities.CodeValue;
 import org.koreait.global.repositories.CodeValueRepository;
+import org.koreait.member.MemberUtil;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.MessageSource;
@@ -25,6 +27,7 @@ public class Utils {
     private final MessageSource messageSource;
     private final DiscoveryClient discoveryClient;
     private final CodeValueRepository codeValueRepository;
+    private final MemberUtil memberUtil;
 
     /**
      * 메서지 코드로 조회된 문구
@@ -164,7 +167,38 @@ public class Utils {
         return item == null ? null : (T)item.getValue();
     }
 
+    /**
+     * 저장된 값 code로 삭제
+     *
+     * @param code
+     */
+    public void deleteValue(String code) {
+        codeValueRepository.deleteById(code);
+    }
+
     public String getUserHash() {
-        return getValue(Objects.hash("userHash"));
+        String userKey = getValue("" + Objects.hash("userHash"));
+        String userHash = "";
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(userKey)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return "";
+    }
+
+    public boolean isMobile() {
+
+        // 요청 헤더 - User-Agent / 브라우저 정보
+        String ua = request.getHeader("User-Agent");
+        String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
+
+
+        return StringUtils.hasText(ua) && ua.matches(pattern);
     }
 }

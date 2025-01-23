@@ -31,7 +31,6 @@ public class BoardAuthService {
     private final BoardInfoService infoService;
     private final CommentInfoService commentInfoService;
     private final MemberUtil memberUtil;
-    private final HttpSession session;
 
     /**
      * 게시판 권한 체크
@@ -86,26 +85,26 @@ public class BoardAuthService {
              * 2. 비회원 게시글인 경우 / 비회원 비밀번호 확인이 완료된 경우 삭제 가능
              */
             BoardData item = infoService.get(seq);
+            String createdBy = item.getCreatedBy();
 
-
-            if (poster == null) { // 비회원 게시글
+            if (createdBy == null) { // 비회원 게시글
                 /**
                  * 비회원 게시글이 인증된 경우 - 세션 키 - "board_게시글번호"가 존재
                  * 인증이 되지 않은 경우 GuestPasswordCheckException을 발생 시킨다 -> 비번 확인 절차
                  */
-                if (session.getAttribute("board_" + seq) == null) {
-                    session.setAttribute("seq", seq);
+                if (utils.getValue("board_" + seq) == null) {
+                    utils.saveValue("seq", seq);
                     throw new GuestPasswordCheckException();
                 }
 
-            } else if (!memberUtil.isLogin() || !poster.getEmail().equals(member.getEmail())) { // 회원 게시글  - 직접 작성한 회원만 수정 가능 통제 - 미로그인 상태 또는 로그인 상태이지만 작성자의 이메일과 일치하지 않는 경우
+            } else if (!memberUtil.isLogin() || !createdBy.equals(member.getEmail())) { // 회원 게시글  - 직접 작성한 회원만 수정 가능 통제 - 미로그인 상태 또는 로그인 상태이지만 작성자의 이메일과 일치하지 않는 경우
                 isVerified = false;
             }
         } else if (mode.equals("comment")) { // 댓글 수정 삭제
             String commenter = comment.getCreatedBy();
             if (commenter == null) { // 비회원으로 작성한 댓글
-                if (session.getAttribute("comment_" + seq) == null) { // 댓글 비회원 인증 X
-                    session.setAttribute("cSeq", seq);
+                if (utils.getValue("_comment_" + seq) == null) { // 댓글 비회원 인증 X
+                    utils.saveValue("_cSeq", seq);
                     throw new GuestPasswordCheckException();
                 }
             } else if (!memberUtil.isLogin() || !commenter.equals(member.getEmail())) { // 회원이 작성한 댓글

@@ -7,8 +7,11 @@ import org.koreait.board.entities.QBoardView;
 import org.koreait.board.repositories.BoardDataRepository;
 import org.koreait.board.repositories.BoardViewRepository;
 import org.koreait.global.libs.Utils;
+import org.koreait.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Lazy
 @Service
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class BoardViewUpdateService {
     private final BoardDataRepository boardDataRepository;
     private final BoardViewRepository boardViewRepository;
+    private final MemberUtil memberUtil;
     private final Utils utils;
 
     public long process(Long seq) {
