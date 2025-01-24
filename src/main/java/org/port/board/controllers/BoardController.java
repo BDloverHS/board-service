@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.port.board.entities.Board;
 import org.port.board.entities.BoardData;
-import org.port.board.services.BoardAuthService;
-import org.port.board.services.BoardDeleteService;
-import org.port.board.services.BoardInfoService;
-import org.port.board.services.BoardUpdateService;
+import org.port.board.services.*;
 import org.port.board.services.configs.BoardConfigInfoService;
 import org.port.board.validators.BoardValidator;
 import org.port.global.exceptions.BadRequestException;
@@ -31,6 +28,7 @@ public class BoardController {
     private final BoardInfoService infoService;
     private final BoardDeleteService deleteService;
     private final BoardAuthService authService;
+    private final BoardViewUpdateService viewUpdateService;
 
     /**
      * 게시판 설정 한개 조회
@@ -96,6 +94,17 @@ public class BoardController {
         ListData<BoardData> data = infoService.getList(bid, search);
 
         return new JSONData(data);
+    }
+
+    /**
+     * 조회수 업데이트 처리
+     *
+     * @param seq
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @GetMapping("/viewCount/{seq}")
+    public void updateViewCount(@PathVariable("seq") Long seq) {
+        viewUpdateService.process(seq);
     }
 
     /**
