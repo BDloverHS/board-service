@@ -7,6 +7,7 @@ import org.port.board.services.BoardDeleteService;
 import org.port.board.services.BoardUpdateService;
 import org.port.board.services.configs.BoardConfigDeleteService;
 import org.port.board.services.configs.BoardConfigInfoService;
+import org.port.board.services.configs.BoardConfigUpdateService;
 import org.port.board.validators.BoardConfigValidator;
 import org.port.global.exceptions.BadRequestException;
 import org.port.global.libs.Utils;
@@ -24,7 +25,7 @@ public class BoardAdminController {
 
     private final Utils utils;
     private final BoardConfigValidator configValidator;
-    private final BoardUpdateService updateService;
+    private final BoardConfigUpdateService updateService;
     private final BoardConfigInfoService infoService;
     private final BoardConfigDeleteService deleteService;
 
@@ -70,7 +71,7 @@ public class BoardAdminController {
 
         List<Board> items = updateService.process(form);
 
-        return null;
+        return new JSONData(items);
     }
 
     /**

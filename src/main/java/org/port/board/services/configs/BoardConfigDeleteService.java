@@ -3,6 +3,7 @@ package org.port.board.services.configs;
 import lombok.RequiredArgsConstructor;
 import org.port.board.entities.Board;
 import org.port.board.entities.BoardData;
+import org.port.board.entities.QBoardData;
 import org.port.board.repositories.BoardDataRepository;
 import org.port.board.repositories.BoardRepository;
 import org.springframework.context.annotation.Lazy;
