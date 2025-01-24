@@ -2,9 +2,15 @@ package org.port.board.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.port.board.entities.Board;
+import org.port.board.services.BoardDeleteService;
+import org.port.board.services.BoardUpdateService;
+import org.port.board.services.configs.BoardConfigDeleteService;
+import org.port.board.services.configs.BoardConfigInfoService;
 import org.port.board.validators.BoardConfigValidator;
 import org.port.global.exceptions.BadRequestException;
 import org.port.global.libs.Utils;
+import org.port.global.paging.ListData;
 import org.port.global.rests.JSONData;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +24,9 @@ public class BoardAdminController {
 
     private final Utils utils;
     private final BoardConfigValidator configValidator;
+    private final BoardUpdateService updateService;
+    private final BoardConfigInfoService infoService;
+    private final BoardConfigDeleteService deleteService;
 
     /**
      * 게시판 설정 등록, 수정 처리
@@ -33,7 +42,9 @@ public class BoardAdminController {
             throw new BadRequestException(utils.getErrorMessages(errors));
         }
 
-        return null;
+        Board board = updateService.process(form);
+
+        return new JSONData(board);
     }
 
     /**
@@ -44,7 +55,9 @@ public class BoardAdminController {
     @GetMapping("/config")
     public JSONData list(@ModelAttribute BoardConfigSearch search) {
 
-        return null;
+        ListData<Board> items = infoService.getList(search);
+
+        return new JSONData(items);
     }
 
     /**
@@ -54,6 +67,8 @@ public class BoardAdminController {
      */
     @PatchMapping("/config")
     public JSONData update(@RequestBody List<RequestConfig> form) {
+
+        List<Board> items = updateService.process(form);
 
         return null;
     }
@@ -67,6 +82,8 @@ public class BoardAdminController {
     @DeleteMapping("/config")
     public JSONData delete(@RequestParam("bid") List<String> bids) {
 
-        return null;
+        List<Board> items = deleteService.process(bids);
+
+        return new JSONData(items);
     }
 }

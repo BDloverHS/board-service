@@ -1,14 +1,22 @@
 package org.port.board.services;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.port.board.controllers.BoardConfigSearch;
 import org.port.board.controllers.RequestBoard;
+import org.port.board.controllers.RequestConfig;
 import org.port.board.entities.Board;
 import org.port.board.entities.BoardData;
 import org.port.board.exceptions.BoardDataNotFoundException;
 import org.port.board.repositories.BoardDataRepository;
+import org.port.board.services.configs.BoardConfigDeleteService;
 import org.port.board.services.configs.BoardConfigInfoService;
+import org.port.board.services.configs.BoardConfigUpdateService;
+import org.port.board.validators.BoardConfigValidator;
 import org.port.global.libs.Utils;
+import org.port.global.paging.ListData;
+import org.port.global.rests.JSONData;
 import org.port.member.MemberUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
@@ -17,9 +25,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 @Lazy
