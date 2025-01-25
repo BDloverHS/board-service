@@ -102,7 +102,7 @@ public class BoardController {
      * @param seq
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @GetMapping("/viewCount/{seq}")
+    @GetMapping("/viewcount/{seq}")
     public void updateViewCount(@PathVariable("seq") Long seq) {
         viewUpdateService.process(seq);
     }
@@ -118,20 +118,22 @@ public class BoardController {
         commonProcess(seq, "delete");
 
         boardValidator.checkDelete(seq); // 댓글이 존재하면 삭제 불가
-        deleteService.delete(seq);
+        BoardData item = deleteService.delete(seq);
 
-        return null;
+        return new JSONData(item);
     }
 
     /**
-     * 비회원 비밀번호
-     *  - 응답코드 200 : 검증 성공
+     * 비회원 비밀번호 검증
+     *  - 응답코드 204 : 검증 성공
      *  - 응답코드 401 : 검증 실패
      *
      * @params seq : 게시글 번호
+     *
+     *
      */
     @PostMapping("/password/{seq}")
-    public ResponseEntity<Void> validateGuestPassword(@PathVariable("seq") Long seq, @RequestParam(name = "password", required = false) String password) {
+    public ResponseEntity<Void> validateGuestPassword(@PathVariable("seq") Long seq, @RequestParam(name="password", required = false) String password) {
         if (!StringUtils.hasText(password)) {
             throw new BadRequestException(utils.getMessage("NotBlank.password"));
         }
@@ -158,6 +160,6 @@ public class BoardController {
      * @param mode
      */
     private void commonProcess(String bid, String mode) {
-        authService.check(mode, bid); // 게시판 권한 체크 - 글 목록, 글 작성
+        authService.check(mode, bid); // 게시판 권한 체크 - 글목록, 글 작성
     }
 }

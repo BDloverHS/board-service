@@ -65,23 +65,23 @@ public class Utils {
         ResourceBundleMessageSource ms = (ResourceBundleMessageSource) messageSource;
 
 
-            // 필드별 에러코드 - getFieldErrors()
-            // Collectors.toMap
-            Map<String, List<String>> messages = errors.getFieldErrors()
-                    .stream()
-                    .collect(Collectors.toMap(FieldError::getField, f -> getMessages(f.getCodes()), (v1, v2) -> v2));
+        // 필드별 에러코드 - getFieldErrors()
+        // Collectors.toMap
+        Map<String, List<String>> messages = errors.getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, f -> getMessages(f.getCodes()), (v1, v2) -> v2));
 
-            // 글로벌 에러코드 - getGlobalErrors()
-            List<String> gMessages = errors.getGlobalErrors()
-                    .stream()
-                    .flatMap(o -> getMessages(o.getCodes()).stream())
-                    .toList();
-            // 글로벌 에러코드 필드 - global
-            if (!gMessages.isEmpty()) {
-                messages.put("global", gMessages);
-            }
+        // 글로벌 에러코드 - getGlobalErrors()
+        List<String> gMessages = errors.getGlobalErrors()
+                .stream()
+                .flatMap(o -> getMessages(o.getCodes()).stream())
+                .toList();
+        // 글로벌 에러코드 필드 - global
+        if (!gMessages.isEmpty()) {
+            messages.put("global", gMessages);
+        }
 
-            return messages;
+        return messages;
     }
 
     /**
@@ -136,9 +136,7 @@ public class Utils {
      */
     public String getUrl(String url) {
         int port = request.getServerPort();
-
         String _port = port == 80 || port == 443 ? "" : ":" + port;
-
         return String.format("%s://%s%s%s%s", request.getScheme(), request.getServerName(), _port, request.getContextPath(), url);
     }
 

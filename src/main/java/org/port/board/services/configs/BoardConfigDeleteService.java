@@ -16,19 +16,21 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BoardConfigDeleteService {
+
     private final BoardRepository boardRepository;
     private final BoardDataRepository boardDataRepository;
 
+
     /**
-     * 단일 게시판 삭제
+     * 게시판 한개 삭제
      *
      * @param bid
      * @return
      */
     public Board process(String bid) {
         QBoardData boardData = QBoardData.boardData;
-        if (boardRepository.count(boardData.board.bid.eq(bid)) > 0L) {
-            return null; // 게시글이 존재하면 게시글 삭제 불가
+        if (boardDataRepository.count(boardData.board.bid.eq(bid)) > 0L) {
+            return null; // 게시글이 존재하면 게시판 삭제 불가
         }
 
         Board board = boardRepository.findById(bid).orElse(null);
@@ -47,6 +49,7 @@ public class BoardConfigDeleteService {
      * @return
      */
     public List<Board> process(List<String> bids) {
+
         List<Board> deleted = new ArrayList<>();
         for (String bid : bids) {
             Board item = process(bid);
@@ -55,6 +58,6 @@ public class BoardConfigDeleteService {
             }
         }
 
-        return null;
+        return deleted;
     }
 }

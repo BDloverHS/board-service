@@ -47,7 +47,7 @@ public class BoardInfoService {
      */
     public BoardData get(Long seq) {
 
-        BoardData item = boardDataRepository.findById(seq).orElseThrow(BoardDataNotFoundException::new);
+        BoardData item = boardDataRepository.findBySeq(seq).orElseThrow(BoardDataNotFoundException::new);
 
         addInfo(item, true); // 추가 정보 처리
 
@@ -261,9 +261,9 @@ public class BoardInfoService {
                     .fetchFirst();
 
             BoardData next = queryFactory.selectFrom(boardData)
-                            .where(boardData.seq.gt(seq))
-                            .orderBy(boardData.seq.asc())
-                            .fetchFirst();
+                    .where(boardData.seq.gt(seq))
+                    .orderBy(boardData.seq.asc())
+                    .fetchFirst();
 
             item.setPrev(prev);
             item.setNext(next);
@@ -284,7 +284,7 @@ public class BoardInfoService {
         boolean editable = createdBy == null || (memberUtil.isLogin() && loggedMember.getEmail().equals(createdBy)); // 비회원게시글은 비밀번호 확인이 필요하므로 버튼 노출, 회원게시글 로그인한 회원과 일치하면 버튼 노출
 
         boolean mine = utils.getValue(utils.getUserHash() + "_board_" + item.getSeq()) != null
-                        || (memberUtil.isLogin() && loggedMember.getEmail().equals(createdBy));
+                || (memberUtil.isLogin() && loggedMember.getEmail().equals(createdBy));
 
         item.setListable(listable);
         item.setWritable(writable);
